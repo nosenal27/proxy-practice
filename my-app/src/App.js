@@ -4,14 +4,17 @@ import Header from './components/Header';
 import BookTable from './components/BookTable';
 import DisplayBoard from './components/DisplayBoard';
 import CreateBook from './components/CreateBook';
-import { getAllBooks, createBook } from './services/BookService';
+import { getAllBooks, createBook, getAllTodos,createTodo } from './services/BookService';
 import Footer from './components/Footer';
 
 function App () {
 
   const [bookShelf, setBookShelf] = useState({});
   const [books, setBooks] = useState([]);
+  const [todos, setTodos] = useState([]);
+
   const [numberOfBooks, setNumberBooks] = useState(0);
+  const [numberOfTodos, setNumberTodos] = useState(0);
 
   const handleSubmit = () => {
       createBook(bookShelf)
@@ -19,6 +22,11 @@ function App () {
           setNumberBooks(numberOfBooks+1);
       });
   }
+   const handleTodoSubmit = () => {
+     createTodo(bookShelf).then(() => {
+       setNumberTodos(numberOfTodos + 1);
+     });
+   };
 
   const getAllBook = () => {
     getAllBooks()
@@ -27,6 +35,12 @@ function App () {
         setNumberBooks(data.length);
       });
   }
+  const getAllTodo = () => {
+    getAllTodos().then((data) => {
+      setTodos(data);
+      setNumberTodos(data.length);
+    });
+  };
 
   const handleOnChangeForm = (e) => {
       let inputData = bookShelf;
@@ -40,21 +54,24 @@ function App () {
       setBookShelf(inputData);
   }
 
-  
+
   return (
     <div className="main-wrapper">
       <div className="main">
         <Header />
-        <CreateBook 
+        <CreateBook
           bookShelf={bookShelf}
           onChangeForm={handleOnChangeForm}
           handleSubmit={handleSubmit}
+          handleTodoSubmit={handleTodoSubmit}
         />
-        <DisplayBoard 
-          numberOfBooks={numberOfBooks} 
-          getAllBook={getAllBook} 
-        />
+        <DisplayBoard
+          numberOfBooks={numberOfBooks}
+          getAllBook={getAllBook}
+          getAllTodo={getAllTodo}
+          />
         <BookTable books={books} />
+
         <Footer />
       </div>
     </div>
